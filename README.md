@@ -53,6 +53,11 @@ python app.py
 ## Database
 The app creates `tracker.db` in the project folder on first run. Back it up before moving or deleting it. To reset the local demo database, stop the server and delete `tracker.db`; it will be recreated on the next run.
 
+## Deploy to Vercel
+Import this repository into Vercel and deploy with the default Python settings. Vercel detects the Flask app in `app.py` automatically and serves static assets from `public/`.
+
+The Vercel deployment stores SQLite data in `/tmp`, which is temporary and may be cleared between function instances or deployments. Use a persistent PostgreSQL database before relying on saved accounts or internship data.
+
 ## Project structure
 ```text
 student_internship_tracker/
@@ -70,7 +75,7 @@ student_internship_tracker/
 │   ├── reports.html
 │   ├── profile.html
 │   └── 404.html
-└── static/
+└── public/
     ├── css/style.css
     └── js/app.js
 ```

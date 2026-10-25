@@ -3,10 +3,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from datetime import date, datetime, timedelta
 import sqlite3, os
+import tempfile
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DB_PATH = os.path.join(BASE_DIR, "tracker.db")
-app = Flask(__name__)
+if os.environ.get("VERCEL") == "1":
+    DB_PATH = os.path.join(tempfile.gettempdir(), "tracker.db")
+else:
+    DB_PATH = os.path.join(BASE_DIR, "tracker.db")
+app = Flask(__name__, static_folder="public", static_url_path="")
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-development-secret-key")
 
 STATUSES = ["Interested", "Applied", "Assessment", "Interview", "Offer", "Rejected", "Withdrawn"]
