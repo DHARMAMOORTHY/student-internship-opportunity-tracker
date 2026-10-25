@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a35">
+  <title>{% block title %}InternPath{% endblock %} · InternPath</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+{% if session.get('user_id') %}
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark">i</span><span>intern<span class="brand-light">path</span></span></a>
+    <div class="workspace-label">WORKSPACE</div>
+    <nav class="nav-links">
+      <a class="{% if request.endpoint=='dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}"><span>▦</span> Overview</a>
+      <a class="{% if request.endpoint in ['opportunities','opportunity_form'] %}active{% endif %}" href="{{ url_for('opportunities') }}"><span>◈</span> Opportunities</a>
+      <a class="{% if request.endpoint=='checklist_page' %}active{% endif %}" href="{{ url_for('checklist_page') }}"><span>☑</span> Prep checklist</a>
+      <a class="{% if request.endpoint=='reports' %}active{% endif %}" href="{{ url_for('reports') }}"><span>▥</span> Insights & reports</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="upgrade-card"><div class="sparkle">✦</div><strong>Your next chapter starts here.</strong><p>Small steps today. Big opportunities tomorrow.</p></div>
+      <a class="profile-mini" href="{{ url_for('profile') }}"><span class="avatar">{{ session.get('user_name','S')[0]|upper }}</span><span class="profile-mini-text"><b>{{ session.get('user_name') }}</b><small>Student workspace</small></span><span class="dots">···</span></a>
+      <a class="logout-link" href="{{ url_for('logout') }}">↗ Sign out</a>
+    </div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><button class="menu-toggle" data-menu-toggle aria-label="Toggle navigation">☰</button><div class="crumb">Workspace <span>/</span> {% block crumb %}Overview{% endblock %}</div><div class="top-actions"><span class="today-label">{{ now_label if now_label else "YOUR CAREER, ORGANIZED" }}</span><span class="top-avatar">{{ session.get('user_name','S')[0]|upper }}</span></div></header>
+    <div class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category,message in messages %}<div class="flash flash-{{ category }}">{{ message }}<button type="button" data-dismiss>×</button></div>{% endfor %}</div>{% endif %}{% endwith %}
+      {% block content %}{% endblock %}
+    </div>
+    <footer class="footer">Made for your next opportunity <span>✦</span> <span>InternPath · Student workspace</span></footer>
+  </main>
+</div>
+{% else %}
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="public-flashes">{% for category,message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+{% block public_content %}{% endblock %}
+{% endif %}
+</body></html>
